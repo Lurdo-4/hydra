@@ -1,5 +1,6 @@
 import { app } from "electron";
 import Seven, { CommandLineSwitches } from "node-7z";
+import * as tar from "tar";
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -83,6 +84,75 @@ export class SevenZip {
 
     await fs.promises.mkdir(destination, { recursive: true });
 
+    const result = await this.extractArchive(
+      filePath,
+      destination,
+      passwords,
+      onProgress
+    );
+
+    const soleEntry = result.extractedFiles[0];
+    if (
+      result.extractedFiles.length === 1 &&
+      soleEntry?.toLowerCase().endsWith(".tar")
+    ) {
+      const tarPath = path.join(destination, soleEntry);
+
+      if (await this.isTarFile(tarPath)) {
+        const extractedFiles = await this.extractTarFile(tarPath, destination);
+        await fs.promises.rm(tarPath, { force: true });
+        return { success: true, extractedFiles };
+      }
+    }
+
+    return result;
+  }
+
+  private static async isTarFile(filePath: string): Promise<boolean> {
+    const TAR_MAGIC_OFFSET = 257;
+    const TAR_MAGIC = "ustar";
+    const buffer = Buffer.alloc(TAR_MAGIC_OFFSET + TAR_MAGIC.length);
+
+    const handle = await fs.promises.open(filePath, "r");
+    try {
+      const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0);
+      if (bytesRead < buffer.length) return false;
+    } finally {
+      await handle.close();
+    }
+
+    return (
+      buffer.toString(
+        "ascii",
+        TAR_MAGIC_OFFSET,
+        TAR_MAGIC_OFFSET + TAR_MAGIC.length
+      ) === TAR_MAGIC
+    );
+  }
+
+  private static async extractTarFile(
+    tarPath: string,
+    destination: string
+  ): Promise<string[]> {
+    const extractedFiles: string[] = [];
+
+    await tar.x({
+      file: tarPath,
+      cwd: destination,
+      onentry: (entry) => {
+        extractedFiles.push(entry.path);
+      },
+    });
+
+    return extractedFiles;
+  }
+
+  private static extractArchive(
+    filePath: string,
+    destination: string,
+    passwords: string[],
+    onProgress?: (progress: ExtractionProgress) => void
+  ): Promise<ExtractionResult> {
     return new Promise((resolve, reject) => {
       let settled = false;
       let activeAttempt = 0;
