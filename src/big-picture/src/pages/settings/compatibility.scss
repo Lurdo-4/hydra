@@ -57,7 +57,36 @@
     line-height: 1.4;
   }
 
-  &__behavior-item {
+  &__install-row {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 2);
+    flex-wrap: wrap;
+
+    > .compatibility-settings-section__proton-option-description {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__install-row + &__install-row {
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+
+  &__custom-proton-build-actions {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 2);
+    flex-wrap: wrap;
+
+    .dropdown-select {
+      flex: 0 0 220px;
+      min-width: 0;
+    }
+  }
+
+  &__behavior-item,
+  &__custom-proton-build-row {
     display: flex;
     flex-direction: column;
     gap: calc(var(--spacing-unit));

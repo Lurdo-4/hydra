@@ -40,6 +40,8 @@ export const BIG_PICTURE_DIAGNOSTICS_SECTION_REGION_ID =
 export const BIG_PICTURE_DIAGNOSTICS_POSITION_SELECT_ID =
   "big-picture-diagnostics-position-select";
 export const COMPATIBILITY_SECTION_REGION_ID = "compatibility-section-region";
+export const COMPATIBILITY_CUSTOM_PROTON_BUILDS_REGION_ID =
+  "compatibility-custom-proton-builds-region";
 export const INTEGRATIONS_SECTION_REGION_ID = "integrations-section-region";
 export const ACCOUNT_PRIVACY_PRIVACY_SELECT_ID =
   "account-privacy-profile-visibility";
@@ -162,6 +164,28 @@ export const BIG_PICTURE_ITEM_FOCUS_IDS = {
 
 export const COMPATIBILITY_PROTON_OPTION_AUTO_FOCUS_ID =
   "compatibility-proton-option-auto";
+
+export function getCustomProtonBuildVersionSelectFocusId(buildId: string) {
+  return `compatibility-custom-proton-build-version-${buildId}`;
+}
+
+export function getCustomProtonBuildAutoUpdateFocusId(buildId: string) {
+  return `compatibility-custom-proton-build-auto-update-${buildId}`;
+}
+
+export function getCustomProtonBuildInstallFocusId(buildId: string) {
+  return `compatibility-custom-proton-build-install-${buildId}`;
+}
+
+export function getCustomProtonBuildUninstallFocusId(
+  buildId: string,
+  version: string
+) {
+  const sanitizedVersion = version
+    .replaceAll(/[^a-z0-9_-]/gi, "-")
+    .toLowerCase();
+  return `compatibility-custom-proton-build-uninstall-${buildId}-${sanitizedVersion}`;
+}
 
 export const SETTINGS_HEADER_RETURN_TARGET: FocusOverrideTarget = {
   type: "region",
