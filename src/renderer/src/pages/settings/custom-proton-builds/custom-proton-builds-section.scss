@@ -1,0 +1,125 @@
+@use "../../../scss/globals.scss";
+
+.custom-proton-builds-section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(globals.$spacing-unit / 2);
+
+  &__title {
+    margin: 0;
+    font-size: globals.$body-font-size;
+    font-weight: 600;
+  }
+
+  &__description {
+    margin: 0;
+    color: globals.$muted-color;
+    font-size: globals.$small-font-size;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: globals.$spacing-unit;
+    margin-top: calc(globals.$spacing-unit / 2);
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: calc(globals.$spacing-unit / 2);
+    padding: globals.$spacing-unit;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+  }
+
+  &__row-actions {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+    flex-wrap: wrap;
+  }
+
+  &__version-select {
+    flex: 0 0 200px;
+
+    .select-field {
+      width: 100%;
+    }
+
+    .select-field__option {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__installs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__install {
+    display: flex;
+    align-items: center;
+    gap: globals.$spacing-unit;
+
+    > .custom-proton-builds-section__row-status {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__install-remove {
+    width: 28px;
+    height: 28px;
+    min-height: unset;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  &__row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__row-heading {
+    display: flex;
+    align-items: center;
+    gap: calc(globals.$spacing-unit / 2);
+    flex-wrap: wrap;
+  }
+
+  &__row-title {
+    font-weight: 600;
+  }
+
+  &__row-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: globals.$small-font-size;
+  }
+
+  &__row-status {
+    color: globals.$muted-color;
+    font-size: globals.$small-font-size;
+  }
+
+  &__spin {
+    animation: custom-proton-builds-spin 1s linear infinite;
+  }
+
+  @keyframes custom-proton-builds-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

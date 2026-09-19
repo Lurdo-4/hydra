@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GAMEMODE_SITE_URL, MANGOHUD_SITE_URL } from "@shared";
 
@@ -15,6 +15,7 @@ import type { ProtonVersion } from "@types";
 import { DesktopDownloadIcon, LinkExternalIcon } from "@primer/octicons-react";
 import { logger } from "@renderer/logger";
 import { Tooltip } from "react-tooltip";
+import { CustomProtonBuildsSection } from "./custom-proton-builds/custom-proton-builds-section";
 
 import "./settings-behavior.scss";
 import "./settings-general.scss";
@@ -139,7 +140,7 @@ export function SettingsContextCompatibility() {
       });
   }, []);
 
-  useEffect(() => {
+  const refreshProtonVersions = useCallback(() => {
     if (window.electron.platform !== "linux") return;
 
     window.electron
@@ -148,6 +149,10 @@ export function SettingsContextCompatibility() {
       .catch(() => setProtonVersions([]))
       .finally(() => setProtonVersionsLoaded(true));
   }, []);
+
+  useEffect(() => {
+    refreshProtonVersions();
+  }, [refreshProtonVersions]);
 
   useEffect(() => {
     if (!protonVersionsLoaded || !selectedDefaultProtonPath) return;
@@ -279,7 +284,21 @@ export function SettingsContextCompatibility() {
                 }
               />
             </div>
+          </div>
+        </div>
+      )}
 
+      {window.electron.platform === "linux" && (
+        <div className="settings-context-panel__group">
+          <CustomProtonBuildsSection
+            onProtonVersionsChanged={refreshProtonVersions}
+          />
+        </div>
+      )}
+
+      {window.electron.platform === "linux" && (
+        <div className="settings-context-panel__group">
+          <div className="settings-context-compatibility__stack">
             <div className="settings-context-compatibility__section settings-context-compatibility__global-toggles">
               <h3 className="settings-behavior__proton-title">
                 {t("behavior")}
