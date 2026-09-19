@@ -23,6 +23,12 @@ import type {
   AchievementNotificationInfo,
   AchievementNotificationRequest,
   ProtonVersion,
+  CustomProtonBuildId,
+  CustomProtonBuildStatus,
+  CustomProtonBuildRecord,
+  CustomProtonBuildInstallProgress,
+  CustomProtonBuildInstallResult,
+  CustomProtonBuildVersionsPage,
   TorrentFilesResponse,
   DownloadLayoutState,
   EmulatorSystem,
@@ -1025,6 +1031,72 @@ contextBridge.exposeInMainWorld("electron", {
     >,
   getGameLaunchProtonVersion: (shop: GameShop, objectId: string) =>
     ipcRenderer.invoke("getGameLaunchProtonVersion", shop, objectId),
+  getCustomProtonBuilds: () =>
+    ipcRenderer.invoke("getCustomProtonBuilds") as Promise<
+      CustomProtonBuildStatus[]
+    >,
+  refreshCustomProtonBuilds: () =>
+    ipcRenderer.invoke("refreshCustomProtonBuilds") as Promise<
+      CustomProtonBuildStatus[]
+    >,
+  getCustomProtonBuildVersions: (buildId: CustomProtonBuildId, page?: number) =>
+    ipcRenderer.invoke(
+      "getCustomProtonBuildVersions",
+      buildId,
+      page
+    ) as Promise<CustomProtonBuildVersionsPage>,
+  installCustomProtonBuild: (buildId: CustomProtonBuildId, version?: string) =>
+    ipcRenderer.invoke(
+      "installCustomProtonBuild",
+      buildId,
+      version
+    ) as Promise<CustomProtonBuildInstallResult>,
+  setCustomProtonBuildAutoUpdate: (
+    buildId: CustomProtonBuildId,
+    enabled: boolean
+  ) =>
+    ipcRenderer.invoke(
+      "setCustomProtonBuildAutoUpdate",
+      buildId,
+      enabled
+    ) as Promise<CustomProtonBuildRecord>,
+  uninstallCustomProtonBuild: (buildId: CustomProtonBuildId, version: string) =>
+    ipcRenderer.invoke(
+      "uninstallCustomProtonBuild",
+      buildId,
+      version
+    ) as Promise<{
+      ok: boolean;
+      reason?: string;
+    }>,
+  onCustomProtonBuildInstallProgress: (
+    cb: (payload: CustomProtonBuildInstallProgress) => void
+  ) => {
+    const listener = (
+      _event: unknown,
+      payload: CustomProtonBuildInstallProgress
+    ) => cb(payload);
+    ipcRenderer.on("on-custom-proton-build-install-progress", listener);
+    return () =>
+      ipcRenderer.removeListener(
+        "on-custom-proton-build-install-progress",
+        listener
+      );
+  },
+  onCustomProtonBuildUpdated: (
+    cb: (payload: {
+      buildId: CustomProtonBuildId;
+      version: string | null;
+    }) => void
+  ) => {
+    const listener = (
+      _event: unknown,
+      payload: { buildId: CustomProtonBuildId; version: string | null }
+    ) => cb(payload);
+    ipcRenderer.on("on-custom-proton-build-updated", listener);
+    return () =>
+      ipcRenderer.removeListener("on-custom-proton-build-updated", listener);
+  },
   verifyExecutablePathInUse: (executablePath: string) =>
     ipcRenderer.invoke("verifyExecutablePathInUse", executablePath),
   getLibrary: () => ipcRenderer.invoke("getLibrary"),

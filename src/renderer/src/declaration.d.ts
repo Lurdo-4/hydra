@@ -43,6 +43,12 @@ import type {
   DownloadSource,
   LocalNotification,
   ProtonVersion,
+  CustomProtonBuildId,
+  CustomProtonBuildStatus,
+  CustomProtonBuildRecord,
+  CustomProtonBuildInstallProgress,
+  CustomProtonBuildInstallResult,
+  CustomProtonBuildVersionsPage,
   CreateSteamShortcutOptions,
   TorrentFilesResponse,
   DownloadLayoutState,
@@ -436,6 +442,33 @@ declare global {
       shop: GameShop,
       objectId: string
     ) => Promise<string | null>;
+    getCustomProtonBuilds: () => Promise<CustomProtonBuildStatus[]>;
+    refreshCustomProtonBuilds: () => Promise<CustomProtonBuildStatus[]>;
+    getCustomProtonBuildVersions: (
+      buildId: CustomProtonBuildId,
+      page?: number
+    ) => Promise<CustomProtonBuildVersionsPage>;
+    installCustomProtonBuild: (
+      buildId: CustomProtonBuildId,
+      version?: string
+    ) => Promise<CustomProtonBuildInstallResult>;
+    setCustomProtonBuildAutoUpdate: (
+      buildId: CustomProtonBuildId,
+      enabled: boolean
+    ) => Promise<CustomProtonBuildRecord>;
+    uninstallCustomProtonBuild: (
+      buildId: CustomProtonBuildId,
+      version: string
+    ) => Promise<{ ok: boolean; reason?: string }>;
+    onCustomProtonBuildInstallProgress: (
+      cb: (payload: CustomProtonBuildInstallProgress) => void
+    ) => () => void;
+    onCustomProtonBuildUpdated: (
+      cb: (payload: {
+        buildId: CustomProtonBuildId;
+        version: string | null;
+      }) => void
+    ) => () => void;
     verifyExecutablePathInUse: (executablePath: string) => Promise<Game>;
     getLibrary: () => Promise<LibraryGame[]>;
     refreshLibraryAssets: () => Promise<void>;
