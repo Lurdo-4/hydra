@@ -315,6 +315,32 @@ export const publishExtractionCompleteNotification = async (game: Game) => {
   );
 };
 
+export const publishCustomProtonBuildUpdatedNotification = async (
+  buildName: string,
+  version: string
+) => {
+  const title = t("custom_proton_build_updated_title", {
+    ns: "notifications",
+    name: buildName,
+  });
+  const body = t("custom_proton_build_updated_body", {
+    ns: "notifications",
+    version,
+  });
+
+  new Notification({
+    title,
+    body,
+    icon: trayIcon,
+  }).show();
+
+  await LocalNotificationManager.createNotification(
+    "CUSTOM_PROTON_BUILD_UPDATED",
+    title,
+    body
+  );
+};
+
 export const publishNewAchievementNotification = async (info: {
   achievements: { title: string; iconUrl: string }[];
   unlockedAchievementCount: number;

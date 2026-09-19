@@ -9,6 +9,7 @@ import type {
 import type { GameShop, UnlockedAchievement } from "./game.types";
 import type { ArtworkAssetType } from "./artwork.types";
 import type { GameContentWarning } from "./souvenir.types";
+import type { CustomProtonBuildId } from "./proton-build.types";
 
 export type FriendRequestAction = "ACCEPTED" | "REFUSED" | "CANCEL";
 export * from "./download-contract";
@@ -52,6 +53,7 @@ export interface ProtonVersion {
   name: string;
   path: string;
   source?: "steam" | "compatibility_tools" | "unknown";
+  managedBuildId?: CustomProtonBuildId;
 }
 
 export interface ShopAssets {
@@ -550,7 +552,8 @@ export type LocalNotificationType =
   | "DOWNLOAD_COMPLETE"
   | "UPDATE_AVAILABLE"
   | "ACHIEVEMENT_UNLOCKED"
-  | "SCAN_GAMES_COMPLETE";
+  | "SCAN_GAMES_COMPLETE"
+  | "CUSTOM_PROTON_BUILD_UPDATED";
 
 export interface Notification {
   id: string;
@@ -722,6 +725,7 @@ export * from "./retroarch.types";
 export * from "./artwork.types";
 export * from "./cloud-save.types";
 export * from "./souvenir.types";
+export * from "./proton-build.types";
 
 export type ExtractionFailure =
   | { reason: "unsupported-format"; format: string }

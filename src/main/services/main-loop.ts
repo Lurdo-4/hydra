@@ -6,6 +6,7 @@ import { UpdateManager } from "./update-manager";
 import { INTERVALS } from "@main/constants";
 import { PowerSaveBlockerManager } from "./power-save-blocker";
 import { logger } from "./logger";
+import { checkAllCustomProtonBuildUpdates } from "./proton-builds";
 
 const wrapInLoop = (fn: () => unknown, interval: number) => {
   const loop = async () => {
@@ -37,6 +38,13 @@ export const startMainLoop = async () => {
     INTERVALS.seedStatusWatcher
   );
   wrapInLoop(() => UpdateManager.checkForUpdates(), INTERVALS.updateChecker);
+
+  if (process.platform === "linux") {
+    wrapInLoop(
+      () => checkAllCustomProtonBuildUpdates(),
+      INTERVALS.customProtonBuildUpdateChecker
+    );
+  }
 
   wrapInLoop(() => {
     PowerSaveBlockerManager.syncState({
